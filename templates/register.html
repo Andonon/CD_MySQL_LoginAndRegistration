@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Login and Registration</title>
+  <title>Registration</title>
 </head>
 <body>
     <h1>Registration</h1> 
@@ -14,12 +14,13 @@
         {% endif %}
     {% endwith %}     
     <form action='/register' method='POST'>
-        <label for="first_name">Email:<input type="text" name="first_name" id="first_name"></label>
-        <label for="last_name">Email:<input type="text" name="last_name" id="last_name"></label>
-        <label for="email">Email:<input type="text" name="email" id="email"></label>
-        <label for="password">Email:<input type="text" name="password" id="password"></label>
-        <label for="confirm_password">Email:<input type="text" name="confirm_password" id="confirm_password"></label>
-        <input type="submit" value="Register">
-</form>
+        <p><input type='hidden' name='submitregister'></p>
+        <p><label for="first_name">First Name:<input type="text" name="first_name" id="first_name"></label></p>
+        <p><label for="last_name">Last Name:<input type="text" name="last_name" id="last_name"></label></p>
+        <p><label for="email">Email:<input type="text" name="email" id="email"></label></p>
+        <p><label for="user_password">Password:<input type="password" name="user_password" id="user_password"></label></p>
+        <p><label for="confirm_password">Confirm Password:<input type="password" name="confirm_password" id="confirm_password"></label></p>
+        <p><input type="submit" value="Submit Registration"></p>
+    </form> 
 </body>
 </html>

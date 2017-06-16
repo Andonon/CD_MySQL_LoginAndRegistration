@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Login and Registration</title>
+</head>
+<body>
+    <h1>Home - Welcome</h1> 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}     
+    <p>You are logged in... But that's all this app does.</p>    
+    <p>Session Cookie id =  </p>
+</body>
+</html>
