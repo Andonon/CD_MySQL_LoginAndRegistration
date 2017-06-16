@@ -9,41 +9,43 @@ bcrypt = Bcrypt(app)
 mysql = MySQLConnector(app, 'logins')
 app.secret_key = 'lkjasasdasdasdasd09809a8sdlkjasd9089'
 
-#This is the login page
+#This is the login page which uses the /login route
 @app.route('/')
 def index():
     return render_template('login.html')
 
+#This is the login route which processes the login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #get the user data from the db based on the email address the user typed
     query = "SELECT * from users where email = :email LIMIT 1"
     data = {
         'email': request.form['email']
     }
     get_user = mysql.query_db(query, data)
+    #Check the user info and password
     if get_user:
-        flash("I see you have a user account")
         session['userid'] = get_user[0]['id']
         session['user_first_name'] = get_user[0]['first_name']
         hashed_password = get_user[0]['password']
-        print "29 hashed password = ", hashed_password
         if bcrypt.check_password_hash(hashed_password, request.form['password']):
-            print "31 brypt pass hash validated"
-        #     session['logged_in'] = True
-        #     return redirect('/home')
+            session['logged_in'] = True
+            flash("You successfully logged in...")
+            return redirect('/home')
         else:
-            print "34, failed bcrypt, exiting... "
-        #     session['logged_in'] = False
-
-
-        return redirect('/')
+            session['logged_in'] = False
+            flash("Login failed... Try again, or register.")
+            return redirect('/')
     else:
         flash("Your username (email) was not found, please try again or register")
         return redirect('/')
 
-
-
-
+#This is the home page logout button, where the user will logout.
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session['logged_in'] = False
+    flash("You have been logged out... ")
+    return redirect('/')
 
 #This is the register page, where the user will register for an account.
 @app.route('/register', methods=['GET', 'POST'])
@@ -79,19 +81,14 @@ def register():
             flash("Invalid Email Address detected.")
         #check password and confirm password
         user_password = request.form['user_password']
-        print "61 password", user_password
         confirm_password = request.form['confirm_password']
-        print "63 confirm password:", confirm_password
         if not user_password:
-            print "65 no password"
             error += 1
             flash("You must supply a password.")
         elif not confirm_password:
-            print "69 no confirm password"
             error += 1
             flash("You must supply a confirm password")
         if user_password != confirm_password:
-            print "73 passwords do not match (strings)"
             error += 1
             flash("Passwords do not match.")
         elif len(user_password) < 8:
@@ -120,6 +117,10 @@ def register():
 @app.route('/home')
 def home():
     #check for session
-    return render_template('home.html')
-
+    if not session['logged_in']:
+        flash("Your are not logged in, please login or register.")
+        return redirect('/')
+    else:
+        return render_template('home.html')
+    
 app.run(debug=True)
